@@ -1,0 +1,16 @@
+body {
+    overflow: hidden;
+}
+
+main {
+    overflow-y: auto;
+}
+
+.css-1kwwyae-MuiToolbar-root,
+.Mui-TableHeadCell-Content-Actions {
+    display: none;
+}
+
+.css-13mu4hp-MuiPaper-root-MuiCard-root {
+    overflow-x: auto !important;
+}

@@ -2,10 +2,14 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 // material-ui
-import { Box, List, Typography } from '@mui/material';
+import { List, CircularProgress, Box } from '@mui/material';
+import { PlusCircleOutlined } from '@ant-design/icons';
 
 // project import
 import NavItem from './NavItem';
+
+import { useContext } from 'react';
+import { Context } from 'context/index';
 
 // ==============================|| NAVIGATION - LIST GROUP ||============================== //
 
@@ -13,42 +17,28 @@ const NavGroup = ({ item }) => {
     const menu = useSelector((state) => state.menu);
     const { drawerOpen } = menu;
 
-    const navCollapse = item.children?.map((menuItem) => {
-        switch (menuItem.type) {
-            case 'collapse':
-                return (
-                    <Typography key={menuItem.id} variant="caption" color="error" sx={{ p: 2.5 }}>
-                        collapse - only available in paid version
-                    </Typography>
-                );
-            case 'item':
-                return <NavItem key={menuItem.id} item={menuItem} level={1} />;
-            default:
-                return (
-                    <Typography key={menuItem.id} variant="h6" color="error" align="center">
-                        Fix - Group Collapse or Items
-                    </Typography>
-                );
+    const { shops, shopLoading } = useContext(Context);
+
+    const navCollapse = [
+        ...item?.children,
+        ...shops,
+        {
+            id: 'add-shop',
+            icon: PlusCircleOutlined,
+            title: 'Add Shop',
+            type: 'item',
+            url: '/add-shop'
         }
+    ].map((item, i) => {
+        return <NavItem key={i} item={item} level={1} />;
     });
 
-    return (
-        <List
-            subheader={
-                item.title &&
-                drawerOpen && (
-                    <Box sx={{ pl: 3, mb: 1.5 }}>
-                        <Typography variant="subtitle2" color="textSecondary">
-                            {item.title}
-                        </Typography>
-                        {/* only available in paid version */}
-                    </Box>
-                )
-            }
-            sx={{ mb: drawerOpen ? 1.5 : 0, py: 0, zIndex: 0 }}
-        >
-            {navCollapse}
-        </List>
+    return shopLoading ? (
+        <Box component="div" display="flex" justifyContent="center" alignItems="center">
+            <CircularProgress color="primary" />
+        </Box>
+    ) : (
+        <List sx={{ mb: drawerOpen ? 1.5 : 0, py: 0, zIndex: 0 }}>{navCollapse}</List>
     );
 };
 

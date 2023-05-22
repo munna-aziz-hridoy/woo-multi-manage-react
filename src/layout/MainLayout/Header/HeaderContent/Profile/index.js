@@ -19,6 +19,8 @@ import {
     Typography
 } from '@mui/material';
 
+import { useAuthState, useSignOut } from 'react-firebase-hooks/auth';
+
 // project import
 import MainCard from 'components/MainCard';
 import Transitions from 'components/@extended/Transitions';
@@ -28,6 +30,7 @@ import SettingTab from './SettingTab';
 // assets
 import avatar1 from 'assets/images/users/avatar-1.png';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { auth } from 'firebase.init';
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -56,8 +59,11 @@ function a11yProps(index) {
 const Profile = () => {
     const theme = useTheme();
 
+    const [signOut] = useSignOut(auth);
+    const [user] = useAuthState(auth);
+
     const handleLogout = async () => {
-        // logout
+        signOut().then(() => push('/login'));
     };
 
     const anchorRef = useRef(null);
@@ -71,12 +77,6 @@ const Profile = () => {
             return;
         }
         setOpen(false);
-    };
-
-    const [value, setValue] = useState(0);
-
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
     };
 
     const iconBackColorOpen = 'grey.300';
@@ -97,8 +97,8 @@ const Profile = () => {
                 onClick={handleToggle}
             >
                 <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
-                    <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
-                    <Typography variant="subtitle1">John Doe</Typography>
+                    <Avatar alt="profile user" src={user?.photoURL || avatar1} sx={{ width: 32, height: 32 }} />
+                    <Typography variant="subtitle1">{user?.displayName}</Typography>
                 </Stack>
             </ButtonBase>
             <Popper
@@ -141,10 +141,7 @@ const Profile = () => {
                                                     <Stack direction="row" spacing={1.25} alignItems="center">
                                                         <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
                                                         <Stack>
-                                                            <Typography variant="h6">John Doe</Typography>
-                                                            <Typography variant="body2" color="textSecondary">
-                                                                UI/UX Designer
-                                                            </Typography>
+                                                            <Typography variant="h6">{user?.displayName || 'No Names'}</Typography>
                                                         </Stack>
                                                     </Stack>
                                                 </Grid>
@@ -155,49 +152,6 @@ const Profile = () => {
                                                 </Grid>
                                             </Grid>
                                         </CardContent>
-                                        {open && (
-                                            <>
-                                                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                                    <Tabs
-                                                        variant="fullWidth"
-                                                        value={value}
-                                                        onChange={handleChange}
-                                                        aria-label="profile tabs"
-                                                    >
-                                                        <Tab
-                                                            sx={{
-                                                                display: 'flex',
-                                                                flexDirection: 'row',
-                                                                justifyContent: 'center',
-                                                                alignItems: 'center',
-                                                                textTransform: 'capitalize'
-                                                            }}
-                                                            icon={<UserOutlined style={{ marginBottom: 0, marginRight: '10px' }} />}
-                                                            label="Profile"
-                                                            {...a11yProps(0)}
-                                                        />
-                                                        <Tab
-                                                            sx={{
-                                                                display: 'flex',
-                                                                flexDirection: 'row',
-                                                                justifyContent: 'center',
-                                                                alignItems: 'center',
-                                                                textTransform: 'capitalize'
-                                                            }}
-                                                            icon={<SettingOutlined style={{ marginBottom: 0, marginRight: '10px' }} />}
-                                                            label="Setting"
-                                                            {...a11yProps(1)}
-                                                        />
-                                                    </Tabs>
-                                                </Box>
-                                                <TabPanel value={value} index={0} dir={theme.direction}>
-                                                    <ProfileTab handleLogout={handleLogout} />
-                                                </TabPanel>
-                                                <TabPanel value={value} index={1} dir={theme.direction}>
-                                                    <SettingTab />
-                                                </TabPanel>
-                                            </>
-                                        )}
                                     </MainCard>
                                 </ClickAwayListener>
                             </Paper>

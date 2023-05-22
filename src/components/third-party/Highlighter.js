@@ -21,7 +21,7 @@ const Highlighter = ({ children }) => {
 
     return (
         <Box sx={{ position: 'relative' }}>
-            <CardActions sx={{ justifyContent: 'flex-end', p: 1, mb: highlight ? 1 : 0 }}>
+            <CardActions sx={{ justifyContent: 'flex-end', p: '4px', mb: highlight ? 1 : 0 }}>
                 <Box sx={{ display: 'flex', position: 'inherit', right: 0, top: 6 }}>
                     <CopyToClipboard text={reactElementToJSXString(children, { showFunctions: true, maxInlineAttributesLineLength: 100 })}>
                         <Tooltip title="Copy the source" placement="top-end">

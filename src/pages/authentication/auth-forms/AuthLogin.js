@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 
 // material-ui
 import {
@@ -15,8 +15,12 @@ import {
     InputLabel,
     OutlinedInput,
     Stack,
-    Typography
+    Typography,
+    Box,
+    CircularProgress
 } from '@mui/material';
+
+import { useAuthState, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 
 // third party
 import * as Yup from 'yup';
@@ -28,20 +32,35 @@ import AnimateButton from 'components/@extended/AnimateButton';
 
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import { auth } from 'firebase.init';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const AuthLogin = () => {
-    const [checked, setChecked] = React.useState(false);
+    const [checked, setChecked] = useState(false);
 
-    const [showPassword, setShowPassword] = React.useState(false);
-    const handleClickShowPassword = () => {
-        setShowPassword(!showPassword);
-    };
+    const [showPassword, setShowPassword] = useState(false);
 
-    const handleMouseDownPassword = (event) => {
-        event.preventDefault();
-    };
+    const [user, loading] = useAuthState(auth);
+
+    const [signInWithEmailAndPassword, , signInLoading, error] = useSignInWithEmailAndPassword(auth);
+
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const from = location.state?.from?.pathname || '/';
+
+    if (loading || signInLoading) {
+        return (
+            <Box component="div" height="100%" width="100%" minHeight="90vh" display="flex" justifyContent="center" alignItems="center">
+                <CircularProgress color="primary" />
+            </Box>
+        );
+    }
+
+    if (user) {
+        return navigate(from);
+    }
 
     return (
         <>
@@ -59,6 +78,13 @@ const AuthLogin = () => {
                     try {
                         setStatus({ success: false });
                         setSubmitting(false);
+                        const { email, password } = values;
+                        signInWithEmailAndPassword(email, password).then((data) => {
+                            // if (data?.user) {
+                            //     toast.success('Login successfull');
+                            // }
+                        });
+                        navigate('/');
                     } catch (err) {
                         setStatus({ success: false });
                         setErrors({ submit: err.message });
@@ -106,8 +132,12 @@ const AuthLogin = () => {
                                             <InputAdornment position="end">
                                                 <IconButton
                                                     aria-label="toggle password visibility"
-                                                    onClick={handleClickShowPassword}
-                                                    onMouseDown={handleMouseDownPassword}
+                                                    onClick={() => {
+                                                        setShowPassword(!showPassword);
+                                                    }}
+                                                    onMouseDown={(event) => {
+                                                        event.preventDefault();
+                                                    }}
                                                     edge="end"
                                                     size="large"
                                                 >

@@ -127,7 +127,7 @@ const AuthRegister = () => {
                                     )}
                                 </Stack>
                             </Grid>
-                            <Grid item xs={12}>
+                            {/* <Grid item xs={12}>
                                 <Stack spacing={1}>
                                     <InputLabel htmlFor="company-signup">Company</InputLabel>
                                     <OutlinedInput
@@ -147,7 +147,7 @@ const AuthRegister = () => {
                                         </FormHelperText>
                                     )}
                                 </Stack>
-                            </Grid>
+                            </Grid> */}
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
                                     <InputLabel htmlFor="email-signup">Email Address*</InputLabel>
@@ -220,18 +220,7 @@ const AuthRegister = () => {
                                     </Grid>
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={12}>
-                                <Typography variant="body2">
-                                    By Signing up, you agree to our &nbsp;
-                                    <Link variant="subtitle2" component={RouterLink} to="#">
-                                        Terms of Service
-                                    </Link>
-                                    &nbsp; and &nbsp;
-                                    <Link variant="subtitle2" component={RouterLink} to="#">
-                                        Privacy Policy
-                                    </Link>
-                                </Typography>
-                            </Grid>
+
                             {errors.submit && (
                                 <Grid item xs={12}>
                                     <FormHelperText error>{errors.submit}</FormHelperText>

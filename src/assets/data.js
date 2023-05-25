@@ -29,7 +29,7 @@ const columnCatelog = [
     {
         accessorKey: 'name',
         header: 'Name',
-        size: 280
+        size: 250
     },
     {
         accessorKey: 'jancode',

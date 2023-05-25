@@ -92,8 +92,8 @@ const Table = ({ data, shop, refetch, setPage, loading, setProducts }) => {
                     columns={shop?.product_type === 'Catelog' ? columnCatelog : columnGenarel}
                     defaultColumn={{
                         maxSize: 400,
-                        minSize: 60,
-                        size: 130
+                        minSize: 30,
+                        size: 70
                     }}
                     enableColumnResizing
                     enableColumnActions={false}

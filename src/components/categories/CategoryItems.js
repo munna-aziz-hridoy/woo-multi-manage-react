@@ -6,16 +6,14 @@ import { MdKeyboardArrowRight } from 'react-icons/md';
 import CategoryContainer from './CategoryContainer';
 import { defaultImage } from 'assets/data';
 
-function CategoryItems({ category, shop, setselectedCategory }) {
+function CategoryItems({ category, shop, setselectedCategory, setOpenCategory, setPage }) {
     const [openSubCategory, setOpenSubCategory] = useState(false);
 
     const handleClickCategory = (e) => {
         e.stopPropagation();
-        if (category?.children_count > 0) {
-            setOpenSubCategory((prev) => !prev);
-        } else {
-            setselectedCategory(category?.id);
-        }
+        setPage(1);
+        setselectedCategory(category);
+        setOpenCategory(false);
     };
     return (
         <>
@@ -51,6 +49,10 @@ function CategoryItems({ category, shop, setselectedCategory }) {
                     {category?.name}
                     {category?.children_count > 0 && (
                         <MdKeyboardArrowRight
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenSubCategory((prev) => !prev);
+                            }}
                             fontSize={22}
                             style={{
                                 transform: `rotate(${openSubCategory ? '90deg' : '0deg'})`,
@@ -61,7 +63,13 @@ function CategoryItems({ category, shop, setselectedCategory }) {
                 </Typography>
             </Box>
             {category?.children_count > 0 && openSubCategory && (
-                <CategoryContainer shop={shop} id={category?.id} setselectedCategory={setselectedCategory} />
+                <CategoryContainer
+                    shop={shop}
+                    id={category?.id}
+                    setselectedCategory={setselectedCategory}
+                    setOpenCategory={setOpenCategory}
+                    setPage={setPage}
+                />
             )}
         </>
     );

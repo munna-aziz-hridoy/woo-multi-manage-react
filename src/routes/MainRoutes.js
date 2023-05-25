@@ -26,10 +26,10 @@ const MainRoutes = {
         },
 
         {
-            path: 'dashboard',
+            path: 'overview',
             children: [
                 {
-                    path: 'default',
+                    path: '',
                     element: <DashboardDefault />
                 }
             ]

@@ -1,8 +1,30 @@
 const columnCatelog = [
     {
         accessorKey: 'image',
+        size: 70,
         header: 'Image',
-        Cell: ({ cell }) => <img alt="product" width={40} height={50} src={cell.getValue()} />
+        Cell: ({ cell }) => (
+            <div
+                className="image_container"
+                style={{ position: 'relative', width: '30px', height: '30px', margin: 'auto', transition: 'all 0.3s' }}
+            >
+                <img alt="product" style={{ width: '100%', height: '100%' }} src={cell.getValue()} />
+                <div
+                    className="image-hover-container"
+                    style={{
+                        position: 'absolute',
+                        background: '#fff',
+                        zIndex: 100,
+                        top: '-8px',
+                        left: ' 50px',
+                        borderRadius: '4px',
+                        transition: 'all 0.3s'
+                    }}
+                >
+                    <img alt="product" style={{ width: '100%', height: '100%' }} src={cell.getValue()} />
+                </div>
+            </div>
+        )
     },
     {
         accessorKey: 'name',

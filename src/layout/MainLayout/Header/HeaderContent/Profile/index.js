@@ -97,7 +97,11 @@ const Profile = () => {
                 onClick={handleToggle}
             >
                 <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
-                    <Avatar alt="profile user" src={user?.photoURL || avatar1} sx={{ width: 32, height: 32 }} />
+                    <Avatar
+                        alt="profile user"
+                        src={user?.photoURL || 'https://img.freepik.com/free-icon/user_318-563642.jpg'}
+                        sx={{ width: 32, height: 32 }}
+                    />
                     <Typography variant="subtitle1">{user?.displayName}</Typography>
                 </Stack>
             </ButtonBase>
@@ -139,7 +143,11 @@ const Profile = () => {
                                             <Grid container justifyContent="space-between" alignItems="center">
                                                 <Grid item>
                                                     <Stack direction="row" spacing={1.25} alignItems="center">
-                                                        <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
+                                                        <Avatar
+                                                            alt="profile user"
+                                                            src={user?.photoURL || 'https://img.freepik.com/free-icon/user_318-563642.jpg'}
+                                                            sx={{ width: 32, height: 32 }}
+                                                        />
                                                         <Stack>
                                                             <Typography variant="h6">{user?.displayName || 'No Names'}</Typography>
                                                         </Stack>

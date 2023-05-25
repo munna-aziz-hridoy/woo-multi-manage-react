@@ -14,11 +14,11 @@ function ContextProvider({ children }) {
 
     const [selectedProducts, setSelectedProducts] = useState([]);
 
+    const [searchValue, setSearchValue] = useState('');
+
     const { userDbId, loading: userLoading, refetch: userRefetch, userSites } = useGetUserId(user?.email);
 
     const { shops, loading: shopLoading, refetch: shopRefetch } = useGetShops(userDbId);
-
-    console.log(shops);
 
     return (
         <Context.Provider
@@ -31,7 +31,9 @@ function ContextProvider({ children }) {
                 shopLoading,
                 shopRefetch,
                 selectedProducts,
-                setSelectedProducts
+                setSelectedProducts,
+                searchValue,
+                setSearchValue
             }}
         >
             {children}

@@ -1,6 +1,6 @@
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 
-const bulkUpdateProducts = (data, shop, refetch, setProducts) => {
+const bulkUpdateProducts = (data, shop, refetch, setSelectedProducts, setProducts) => {
     const { ck, cs, domain } = shop;
 
     const api = new WooCommerceRestApi({
@@ -14,13 +14,14 @@ const bulkUpdateProducts = (data, shop, refetch, setProducts) => {
         update: data
     })
         .then((res) => {
-            console.log(res?.data);
-            refetch((prev) => !prev);
-            setProducts([]);
+            refetch((prev) => {
+                setProducts([]);
+
+                return !prev;
+            });
+            setSelectedProducts([]);
         })
-        .catch((err) => {
-            console.log(err);
-        });
+        .catch((err) => {});
 };
 
 export { bulkUpdateProducts };

@@ -17,8 +17,6 @@ const useGetUserId = (email) => {
                 if (!data.empty) {
                     const user = data.docs[0];
 
-                    console.log(user.id);
-
                     setUserDbId(user.id);
                     const sites = user.data()?.sites || [];
                     setUserSites(sites);

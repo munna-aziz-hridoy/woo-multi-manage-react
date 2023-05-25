@@ -28,7 +28,6 @@ const useGetCategories = (shop, parent = 0) => {
                 .catch((err) => {
                     setLoading(false);
                     setCategories([]);
-                    console.log(err.message);
                 })
                 .finally(() => {
                     setLoading(false);

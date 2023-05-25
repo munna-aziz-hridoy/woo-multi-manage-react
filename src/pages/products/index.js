@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Divider, Box, CircularProgress, Button } from '@mui/material';
+import { Divider, Box, CircularProgress, Button, Typography } from '@mui/material';
 import { BsArrowLeftShort, BsX } from 'react-icons/bs';
 
 import MainCard from 'components/MainCard';
@@ -14,9 +14,13 @@ function Products() {
     const [selectedShop, setSelectedShop] = useState(null);
     const [selectedCategory, setselectedCategory] = useState(null);
 
+    const [breadcrumbs, setBreadcrumbs] = useState('');
+
     const [openCategory, setOpenCategory] = useState(false);
 
-    const { shops } = useContext(Context);
+    const [page, setPage] = useState(1);
+
+    const { shops, searchValue } = useContext(Context);
 
     const params = useParams();
     const navigate = useNavigate();
@@ -27,37 +31,82 @@ function Products() {
         setSelectedShop(selected);
     }, [params?.id]);
 
-    const { products, loading, refetch } = useGetProducts(selectedShop, selectedCategory);
+    const { products, loading, refetch, setProducts } = useGetProducts(selectedShop, selectedCategory?.id, page, setPage, searchValue);
+
+    useEffect(() => {
+        setselectedCategory(null);
+        setBreadcrumbs('');
+        setProducts([]);
+        setPage(1);
+
+        refetch((prev) => !prev);
+    }, [searchValue]);
+
     const { categories } = useGetCategories(selectedShop);
+
+    useEffect(() => {
+        if (selectedCategory) {
+            if (selectedCategory?.parent !== 0) {
+                const parent = categories?.find((category) => category?.id === selectedCategory?.parent);
+
+                setBreadcrumbs(`${parent?.name} ➤ ${selectedCategory?.name}`);
+            } else {
+                setBreadcrumbs(selectedCategory?.name);
+            }
+        }
+    }, [selectedCategory, categories]);
 
     if (shops?.length === 0) {
         navigate('/');
         return null;
     }
 
-    console.log(categories, 'categories');
-
     return (
-        <MainCard title="Products">
+        <MainCard>
             <Box
                 style={{
                     width: '100%'
                 }}
             >
                 <Box width="100%" display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-                    <Button onClick={() => refetch((prev) => !prev)}>Refresh</Button>
+                    <Button
+                        onClick={() => {
+                            setProducts([]);
+                            setPage(1);
+                            refetch((prev) => !prev);
+                        }}
+                    >
+                        Refresh
+                    </Button>
+
+                    <Typography variant="body1" component="p" style={{ fontWeight: 'bold', textTransform: 'capitalize' }}>
+                        {breadcrumbs}
+                    </Typography>
+
                     <Button onClick={() => setOpenCategory(true)}>
                         <BsArrowLeftShort fontSize={24} /> Categories
                     </Button>
                 </Box>
                 <Divider />
-                {loading ? (
-                    <Box component="div" height="100%" width="100%" display="flex" justifyContent="center" alignItems="center" padding={3}>
+
+                {products?.length === 0 && loading && (
+                    <Box component="div" width="100%" display="flex" justifyContent="center" alignItems="center" padding={3}>
                         <CircularProgress color="primary" />
                     </Box>
-                ) : (
-                    <Table data={products} shop={selectedShop} refetch={refetch} />
                 )}
+
+                <Table
+                    data={products}
+                    shop={selectedShop}
+                    refetch={refetch}
+                    setPage={setPage}
+                    loading={loading}
+                    setProducts={setProducts}
+                />
+
+                <Box component="div" height="100px" width="100%" display="flex" justifyContent="center" alignItems="center" padding={3}>
+                    {loading && <CircularProgress color="primary" />}
+                </Box>
 
                 <Box
                     component="div"
@@ -88,7 +137,12 @@ function Products() {
                         />
 
                         <Box component="div" marginTop={8}>
-                            <CategoryContainer shop={selectedShop} setselectedCategory={setselectedCategory} />
+                            <CategoryContainer
+                                setOpenCategory={setOpenCategory}
+                                shop={selectedShop}
+                                setselectedCategory={setselectedCategory}
+                                setPage={setPage}
+                            />
                         </Box>
                     </Box>
                 </Box>

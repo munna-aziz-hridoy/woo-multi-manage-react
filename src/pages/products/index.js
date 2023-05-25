@@ -119,7 +119,8 @@ function Products() {
                         top: 0,
                         right: openCategory ? 0 : -2000,
                         boxShadow: '-4px 0 8px #0000001f',
-                        transition: 'all 0.4s'
+                        transition: 'all 0.4s',
+                        overflow: 'auto'
                     }}
                 >
                     <Box component="div" style={{ position: 'relative' }}>

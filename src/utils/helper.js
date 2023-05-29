@@ -1,4 +1,6 @@
 const wooProductToFormatedProduct = (product, type) => {
+    console.log(type);
+
     if (type === 'Catelog') {
         const getMetaValue = (field) => {
             const metaField = product?.meta_data?.find((meta) => meta?.key === field);
@@ -43,11 +45,12 @@ const wooProductToFormatedProduct = (product, type) => {
             jancode: product?.sku || 'N/A',
             category: product?.categories[0]?.name || 'N/A',
             price: product?.price || 'N/A',
-            sellPrice: product?.sell_price || 'N/A',
+            regularPrice: product?.regular_price || 'N/A',
+            sellPrice: product?.sale_price || 'N/A',
             stockStatus: product?.stock_status || 'N/A',
             weight: product?.weight || 'N/A',
             totalSale: product?.total_sales || 'N/A',
-            onSale: product?.onSale ? 'Yes' : 'No'
+            onSale: product?.on_sale ? 'Yes' : 'No'
         };
     }
 };
@@ -80,7 +83,9 @@ const catelogProductFormating = (products, data) => {
             return { key: key, value: item[k] };
         });
 
-        const prevMeta = data?.find((pp) => pp.id === id)?.meta_data;
+        const prevProduct = data?.find((pp) => pp.id === id);
+
+        const prevMeta = prevProduct?.meta_data;
 
         const mergedMeta = prevMeta?.map((met) => {
             const matchedItem = meta?.find((elm) => elm.key === met.key);
@@ -88,10 +93,46 @@ const catelogProductFormating = (products, data) => {
             return { ...met, ...matchedItem };
         });
 
-        return { meta_data: mergedMeta, id, name, sku: jancode };
+        return { meta_data: mergedMeta, id, name: name || prevProduct?.name, sku: jancode || prevProduct?.jancode };
     });
 
     return arrProducts;
 };
 
-export { wooProductToFormatedProduct, catelogProductFormating };
+const generalProductFormating = (selectedProducts, data) => {
+    const updatedProducts = selectedProducts?.map((item) => {
+        const { id, name, price, sellPrice, regularPrice } = item;
+
+        const prevProduct = data?.find((product) => product.id === id);
+
+        let returneddata = {
+            id,
+            name: name || prevProduct?.name,
+            price: price || prevProduct?.price
+        };
+
+        if (sellPrice !== undefined) {
+            if (sellPrice !== '') {
+                returneddata.sale_price = sellPrice;
+                returneddata.on_sale = true;
+            } else {
+                returneddata.sale_price = '';
+                returneddata.on_sale = false;
+            }
+        }
+
+        if (regularPrice !== undefined) {
+            if (regularPrice !== '') {
+                returneddata.regular_price = regularPrice;
+            } else {
+                returneddata.regular_price = '';
+            }
+        }
+
+        return returneddata;
+    });
+
+    return updatedProducts;
+};
+
+export { wooProductToFormatedProduct, catelogProductFormating, generalProductFormating };

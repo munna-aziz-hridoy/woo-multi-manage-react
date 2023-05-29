@@ -31,7 +31,7 @@ const useGetProducts = (shop, selectedCategory = null, page = 1, setPage, search
                 .then((response) => {
                     setLoading(false);
                     if (response?.data) {
-                        // const formatedProducts = response?.data?.map((product) => wooProductToFormatedProduct(product, shop?.product_type));
+                        console.log(response?.data);
 
                         setProducts((prev) => {
                             const newData = response?.data?.filter((item) => !prev.some((preItem) => preItem.id === item.id));
@@ -39,8 +39,6 @@ const useGetProducts = (shop, selectedCategory = null, page = 1, setPage, search
                             const formatedProducts = newData?.map((product) => wooProductToFormatedProduct(product, shop?.product_type));
 
                             return [...prev, ...formatedProducts];
-
-                            // return formatedProducts;
                         });
                     }
                 })

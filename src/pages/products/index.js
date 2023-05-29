@@ -25,13 +25,15 @@ function Products() {
     const params = useParams();
     const navigate = useNavigate();
 
+    const { products, loading, refetch, setProducts } = useGetProducts(selectedShop, selectedCategory?.id, page, setPage, searchValue);
+
     useEffect(() => {
         const selected = shops?.find((shop) => shop?.id === parseInt(params?.id));
 
         setSelectedShop(selected);
+        setselectedCategory(null);
+        setProducts([]);
     }, [params?.id]);
-
-    const { products, loading, refetch, setProducts } = useGetProducts(selectedShop, selectedCategory?.id, page, setPage, searchValue);
 
     useEffect(() => {
         setselectedCategory(null);
@@ -53,6 +55,8 @@ function Products() {
             } else {
                 setBreadcrumbs(selectedCategory?.name);
             }
+        } else {
+            setBreadcrumbs('');
         }
     }, [selectedCategory, categories]);
 

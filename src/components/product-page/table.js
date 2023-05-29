@@ -4,13 +4,15 @@ import { Button, Box } from '@mui/material';
 
 import { columnCatelog, columnGenarel } from 'assets/data';
 import { Context } from 'context/index';
-import { catelogProductFormating } from 'utils/helper';
+import { catelogProductFormating, generalProductFormating } from 'utils/helper';
 import { bulkUpdateProducts } from 'woo-commerce/index';
 
 const Table = ({ data, shop, refetch, setPage, loading, setProducts }) => {
     const { selectedProducts, setSelectedProducts } = useContext(Context);
 
     const [tableData, setTableData] = useState([]);
+
+    const [updatedProducts, setUpdatedProducts] = useState([]);
 
     const bottomBoundaryRef = useRef();
 
@@ -46,12 +48,15 @@ const Table = ({ data, shop, refetch, setPage, loading, setProducts }) => {
     }, []);
 
     const handleUpdate = () => {
-        if (shop?.product_type === 'Catelog') {
-            const updatedProducts = catelogProductFormating(selectedProducts, data);
+        let updatedProducts;
 
-            bulkUpdateProducts(updatedProducts, shop, refetch, setSelectedProducts, setProducts);
+        if (shop?.product_type === 'Catelog') {
+            updatedProducts = catelogProductFormating(selectedProducts, data);
         } else {
+            updatedProducts = generalProductFormating(selectedProducts, data);
         }
+
+        bulkUpdateProducts(updatedProducts, shop, refetch, setSelectedProducts, setProducts, setUpdatedProducts);
     };
 
     const handleCancel = () => {
@@ -95,6 +100,12 @@ const Table = ({ data, shop, refetch, setPage, loading, setProducts }) => {
                         minSize: 30,
                         size: 70
                     }}
+                    // enableStickyHeader
+                    // muiTableContainerProps={{
+                    //     sx: {
+                    //         maxHeight: '100vh'
+                    //     }
+                    // }}
                     enableColumnResizing
                     enableColumnActions={false}
                     enableColumnFilters={false}
@@ -108,6 +119,9 @@ const Table = ({ data, shop, refetch, setPage, loading, setProducts }) => {
                     rowVirtualizerProps={{
                         overscan: 2,
                         estimateSize: () => 50
+                    }}
+                    rowRenderer={({ rowData, rowIndex }) => {
+                        return <div style={{ background: 'red' }}>{rowData?.name}</div>;
                     }}
                     muiTableBodyCellEditTextFieldProps={({ cell }) => ({
                         //onBlur is more efficient, but could use onChange instead
@@ -147,8 +161,8 @@ const Table = ({ data, shop, refetch, setPage, loading, setProducts }) => {
                     })}
                     initialState={{ density: 'compact' }}
                 />
+                <div style={{ position: 'absolute', bottom: '0', width: '100%' }} ref={bottomBoundaryRef} />
             </div>
-            <div style={{ position: 'absolute', bottom: '0', width: '100%' }} ref={bottomBoundaryRef} />
         </div>
     );
 };

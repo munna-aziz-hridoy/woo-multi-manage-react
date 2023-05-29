@@ -79,8 +79,25 @@ const columnGenarel = [
         accessorKey: 'image',
         header: 'Image',
         Cell: ({ cell }) => (
-            <div className="image_container">
-                <img alt="product" width={40} height={50} src={cell.getValue()} />
+            <div
+                className="image_container"
+                style={{ position: 'relative', width: '30px', height: '30px', margin: 'auto', transition: 'all 0.3s' }}
+            >
+                <img alt="product" style={{ width: '100%', height: '100%' }} src={cell.getValue()} />
+                <div
+                    className="image-hover-container"
+                    style={{
+                        position: 'absolute',
+                        background: '#fff',
+                        zIndex: 100,
+                        top: '-8px',
+                        left: ' 50px',
+                        borderRadius: '4px',
+                        transition: 'all 0.3s'
+                    }}
+                >
+                    <img alt="product" style={{ width: '100%', height: '100%' }} src={cell.getValue()} />
+                </div>
             </div>
         )
     },
@@ -101,12 +118,30 @@ const columnGenarel = [
         header: 'Price'
     },
     {
+        accessorKey: 'regularPrice',
+        header: 'Regular price'
+    },
+    {
         accessorKey: 'sellPrice',
         header: 'Sell Price'
     },
     {
         accessorKey: 'stockStatus',
         header: 'Stock Status'
+        // Cell: ({ cell }) => (
+        //     <div className="stock_status_container">
+        //         <select
+        //             className="stock_status_select"
+        //             // value={cell.getValue()}
+        //             onChange={(e) => {
+        //                 console.log(cell.renderValue());
+        //             }}
+        //         >
+        //             <option value="instock">In Stock</option>
+        //             <option value="outofstock">Out Stock</option>
+        //         </select>
+        //     </div>
+        // )
     },
     {
         accessorKey: 'weight',
